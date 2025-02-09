@@ -29,7 +29,7 @@ public class FirstPersonMovement : MonoBehaviour
     LayerMask groundMasks;
 
 
-    void Awake()
+    virtual protected void Awake()
     {
         groundMasks = LayerMask.GetMask("Ground", "Static");
         playerCamera = Camera.main.transform.parent.parent;
@@ -38,11 +38,11 @@ public class FirstPersonMovement : MonoBehaviour
         characterController.height = StandHeight;
     }
 
-    private void Start()
+    virtual protected void Start()
     {
     }
 
-    void Update()
+    virtual protected void Update()
     {
         InputHolder();
         MouseLook();

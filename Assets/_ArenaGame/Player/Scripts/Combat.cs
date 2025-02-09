@@ -7,11 +7,11 @@ public class Combat : MonoBehaviour
     [SerializeField] int life = 100;
     Animator anim;
 
-    public void Attack()
+    /*public void Attack()
     {
         //anim.SetTrigger("Attack");
         SoundSystem.Instance.PlayOneShot("bang");
-    }
+    }*/
 
     void TakeDamage(int dmg)
     {

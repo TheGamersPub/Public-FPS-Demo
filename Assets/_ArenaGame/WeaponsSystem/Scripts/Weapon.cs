@@ -41,7 +41,7 @@ public class Weapon : MonoBehaviour
     }
     public virtual void Update() { }
 
-    public void Shoot()
+    public void Attack()
     {
         //anim.SetTrigger("Shoot");
     }

@@ -111,6 +111,11 @@ public class PlayerCombat : Combat
         }
     }
 
+    void Attack()
+    {
+
+    }
+
     IEnumerator DrawAfterSheath()
     {
         canChangeWeapon = false;
@@ -118,5 +123,4 @@ public class PlayerCombat : Combat
         withdrawnedWeapon.Draw();
         canChangeWeapon = true;
     }
-
 }
