@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SniperRifle : Weapon
+public class Pistol : FireWeapon
 {
     public override void Start()
     {

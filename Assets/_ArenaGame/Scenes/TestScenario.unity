@@ -7669,35 +7669,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4010654440807929438, guid: 9cc45cbe54813474c945d1f50984df82, type: 3}
   m_PrefabInstance: {fileID: 507300196}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &509842707 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7701698830739170575, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
-  m_PrefabInstance: {fileID: 7085027680784976801}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &509842709
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 509842707}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 465b232b58639894f91d2a92e9ba372f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  visuals: {fileID: 0}
-  anchor: {fileID: 0}
-  freeSight: {fileID: 0}
-  ironSight: {fileID: 0}
-  damage: 0
-  rateOfFire: 0
-  range: 0
-  ammoCapacity: 0
-  magazineSize: 0
-  aimVelocity: 0
-  swayIntensity: 0
-  swaySmooth: 0
 --- !u!4 &519071019 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5342599434098155029, guid: 7b14536b7a3545d438337303886568a6, type: 3}
@@ -33173,10 +33144,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7701698830739170575, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 509842709}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

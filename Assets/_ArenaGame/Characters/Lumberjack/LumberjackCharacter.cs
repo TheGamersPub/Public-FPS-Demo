@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class LumberjackCharacter : FirstPersonMovement
 {
-    private Weapon _weaponAxe;
+    [SerializeField] private ThrowWeapon _weaponAxe;
     private int _axesAvailable;
 
     protected override void Update()
@@ -15,11 +15,11 @@ public class LumberjackCharacter : FirstPersonMovement
         {
             _weaponAxe.UpdateSway();
             if (Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0)
-                _weaponAxe.UpdateBreath(Weapon.WalkMode.Idle);
+                _weaponAxe.UpdateBreath(WalkMode.Idle);
             else if (Input.GetKey(KeyCode.LeftShift))
-                _weaponAxe.UpdateBreath(Weapon.WalkMode.Run);
+                _weaponAxe.UpdateBreath(WalkMode.Run);
             else
-                _weaponAxe.UpdateBreath(Weapon.WalkMode.Walk);
+                _weaponAxe.UpdateBreath(WalkMode.Walk);
         }
     }
 

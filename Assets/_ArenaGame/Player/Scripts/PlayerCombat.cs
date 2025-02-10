@@ -14,8 +14,8 @@ public class PlayerCombat : Combat
 
     public WeaponSlot equipedSlot;
     private WeaponSlot lastSlot;
-    public Weapon primaryWeapon, secundaryWeapon, specialWeapon;
-    private Weapon withdrawnedWeapon;
+    public FireWeapon primaryWeapon, secundaryWeapon, specialWeapon;
+    private FireWeapon withdrawnedWeapon;
     private bool canChangeWeapon = true;
 
     private void Update()
@@ -27,11 +27,11 @@ public class PlayerCombat : Combat
         {
             withdrawnedWeapon.UpdateSway();
             if (Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0) 
-                withdrawnedWeapon.UpdateBreath(Weapon.WalkMode.Idle);
+                withdrawnedWeapon.UpdateBreath(FireWeapon.WalkMode.Idle);
             else if (Input.GetKey(KeyCode.LeftShift)) 
-                withdrawnedWeapon.UpdateBreath(Weapon.WalkMode.Run);
+                withdrawnedWeapon.UpdateBreath(FireWeapon.WalkMode.Run);
             else 
-                withdrawnedWeapon.UpdateBreath(Weapon.WalkMode.Walk);
+                withdrawnedWeapon.UpdateBreath(FireWeapon.WalkMode.Walk);
         }
     }
 
