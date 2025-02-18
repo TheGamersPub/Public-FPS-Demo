@@ -1,101 +1,149 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class FirstPersonMovement : MonoBehaviour
 {
-    [SerializeField] [Range(100,400)] float mouseSensitivity;
+    [Header("Debug")]
+    public bool useDebugUI;
+    [SerializeField] CanvasGroup _debugUI;
+    [SerializeField] TMP_Text _velocityTMP;
+
+    [Space(5f)]
+    [Header("Mouse Look")]
+    [SerializeField][Range(100, 400)] private float _mouseSensX;
+    [SerializeField][Range(100, 400)] private float _mouseSensY;
+    private float _xRotation;
+    private float _yRotation;
+    private float _mouseX;
+    private float _mouseY;
+    private bool _isCursorLocked = false;
+
+    [Space(5f)]
+    [Header("Jump")]
+    [SerializeField] private float _jumpForce = 8f;
+    private float _horizontalInput;
+    private float _verticalInput;
+
+    [Space(5f)]
     [SerializeField] Animator anim;
 
-    float playerSpeed = 6f;
-    float StandHeight = 1.5f;
-    float DuckHeight = .75f;
-    float sprintSpeed = 2f;
-    float walkSpeed = 0.5f;
-    float jumpHeight = 1f;
-    float mouseX;
-    float mouseY;
-    float xRotation;
-    float gravityValue = -9.81f * 1.5f;
-    bool sprint;
-    bool walk;
-    bool duck;
-    bool isGrounded;  
+    [SerializeField] private float _playerAcceleration = 2f;
+    [SerializeField] private float _playerMaxSpeed = 15f;
+    [SerializeField] private float _airVelocityMulti = .4f;
+    [SerializeField] float _standHeight = 1.8f;
+    //[SerializeField] float _DuckHeight = .75f;
+    //[SerializeField] float _sprintSpeedMultiplyer = 1.5f;
+    //[SerializeField] float _walkSpeedMultiplyer = 1f;
+    [SerializeField] private float _gravityForce = 9.81f * 1.2f;
+    [SerializeField] private float _groundDrag = 5f;
 
-    Transform playerCamera;
-    CharacterController characterController;
+    private bool _isGrounded;
 
-    Vector3 fallVelocity;
-    LayerMask groundMasks;
+    private float _height;
+    private float _velocity;
+    private Camera _camera;
+    private Rigidbody _rb;
+    private Vector3 _moveDirection;
 
+    private Vector3 _fallVelocity;
+    private LayerMask _groundLayer;
+
+    public CursorLockMode CursorLock
+    {
+        set
+        {
+            Cursor.lockState = value;
+            _isCursorLocked = value == CursorLockMode.Locked;
+            Cursor.visible = !_isCursorLocked;
+        }
+    }
 
     virtual protected void Awake()
     {
-        groundMasks = LayerMask.GetMask("Ground", "Static");
-        playerCamera = Camera.main.transform.parent.parent;
-        characterController = gameObject.AddComponent<CharacterController>();
-        characterController.radius = .35f;
-        characterController.height = StandHeight;
+        if (useDebugUI) _debugUI.alpha = 1;
+        else _debugUI.alpha = 0;
+        CursorLock = CursorLockMode.Locked;
+        _groundLayer = LayerMask.GetMask("Ground", "Static");
+        _camera = Camera.main;
     }
 
     virtual protected void Start()
     {
+        _rb = GetComponent<Rigidbody>();
+        _rb.freezeRotation = true;
     }
 
     virtual protected void Update()
     {
+        Debug.Log($"IsGrounded: {_isGrounded}");
         InputHolder();
         MouseLook();
+        GroundCheck();
         Move();
         Gravity();
     }
 
     void MouseLook()
     {
-        mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        if (!_isCursorLocked) return;
 
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        _mouseX = Input.GetAxis("Mouse X") * _mouseSensX * Time.deltaTime;
+        _mouseY = Input.GetAxis("Mouse Y") * _mouseSensY * Time.deltaTime;
 
-        transform.Rotate(Vector3.up * mouseX);
+        _yRotation += _mouseX;
+        _xRotation -= _mouseY;
+        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
+        _camera.transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
+
+        transform.rotation = Quaternion.Euler(0, _yRotation, 0);
     }
 
     void Move()
     {
-        Vector3 movement = (transform.right * Input.GetAxis("Horizontal") + transform.forward * Input.GetAxis("Vertical"));
-        if (movement != Vector3.zero)
+        _horizontalInput = Input.GetAxisRaw("Horizontal");
+        _verticalInput = Input.GetAxisRaw("Vertical");
+        _moveDirection = transform.forward * _verticalInput + transform.right * _horizontalInput;
+
+        if(_isGrounded) _rb.AddForce(_moveDirection.normalized * _playerAcceleration * 10f, ForceMode.Force);
+        else _rb.AddForce(_moveDirection.normalized * _playerAcceleration * 10f * _airVelocityMulti, ForceMode.Force);
+
+        if (_isGrounded) _rb.linearDamping = _groundDrag;
+        else _rb.linearDamping = 0;
+
+        //Speed Control
+        Vector3 flatVel = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
+        if (flatVel.magnitude > _playerMaxSpeed)
         {
-            if (sprint) movement *= (playerSpeed * sprintSpeed);
-            else if (walk) movement *= (playerSpeed * walkSpeed);
-            else movement *= playerSpeed;
-         
-            characterController.Move(movement * Time.deltaTime);
+            Vector3 limitVel = flatVel.normalized * _playerMaxSpeed;
+            _rb.linearVelocity = new Vector3(limitVel.x, _rb.linearVelocity.y, limitVel.z);
         }
+        if (useDebugUI) _velocityTMP.text = $"Velocity: {_rb.linearVelocity.magnitude.ToString("F2")}";
     }
 
     void Jump()
     {
-        if (isGrounded)
-        fallVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityValue);
+        _rb.linearVelocity = new Vector3(_rb.linearVelocity.x, 0, _rb.linearVelocity.z);
+        _rb.AddForce(transform.up * _jumpForce, ForceMode.Impulse);
     }
 
     void Gravity()
     {
-        GroundCheck();
+        if (!_isGrounded) _fallVelocity += Vector3.down * _gravityForce * Time.deltaTime;
+        else _fallVelocity = Vector3.zero;
 
-        if (!isGrounded) fallVelocity += Vector3.up * gravityValue * Time.deltaTime;
-            
-        characterController.Move(fallVelocity * Time.deltaTime);
+        _rb.AddForce(_fallVelocity, ForceMode.Force);
     }
 
     void GroundCheck()
     {
-        isGrounded = Physics.CheckSphere(transform.position + (Vector3.down * characterController.height / 2), .3f, groundMasks);
-        Debug.DrawLine(transform.position, transform.position + (Vector3.down * characterController.height / 2), Color.magenta);
-        if (isGrounded && fallVelocity.y < 0)
-            fallVelocity.y = -2f;
+        Vector3 checkPosition = transform.position + Vector3.down * ((_standHeight / 2) + .25f);
+        _isGrounded = Physics.CheckSphere(checkPosition, 0.15f, _groundLayer);
+
+        // Desenha a esfera de checagem
+        DebugExtension.DrawSphere(checkPosition, 0.15f, _isGrounded ? Color.green : Color.red, .1f);
     }
 
     void InputHolder()
@@ -104,19 +152,23 @@ public class FirstPersonMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftControl)) { ToggleDuck(); }
 
         // Walk and Sprint
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !walk && Input.GetKey(KeyCode.W)) { sprint = true; }
+        /*if (Input.GetKeyDown(KeyCode.LeftShift) && !walk && Input.GetKey(KeyCode.W)) { sprint = true; }
         if (Input.GetKeyDown(KeyCode.LeftAlt) && !sprint) { walk = true; }
         
         if (Input.GetKeyUp(KeyCode.LeftShift)) { sprint = false; }
-        if (Input.GetKeyUp(KeyCode.LeftAlt)) { walk = false; }
+        if (Input.GetKeyUp(KeyCode.LeftAlt)) { walk = false; }*/
 
         // Jump
-        if (Input.GetButtonDown("Jump")) { Jump(); }
+        if (Input.GetButtonDown("Jump")) { if(_isGrounded) Jump(); }
+
+        //Unlock Cursor
+        if (Input.GetKeyDown(KeyCode.Escape)) { CursorLock = CursorLockMode.None; }
+        if (_isCursorLocked && Input.GetKeyDown(KeyCode.Mouse0)) { CursorLock = CursorLockMode.Locked; }
     }
 
     void ToggleDuck(int mode = -1)
     {
-        StopCoroutine(ToggleDuckRoutine());
+        /*StopCoroutine(ToggleDuckRoutine());
         switch (mode)
         {
             case 0:
@@ -130,10 +182,10 @@ public class FirstPersonMovement : MonoBehaviour
                 break;
         }
 
-        StartCoroutine(ToggleDuckRoutine());
+        StartCoroutine(ToggleDuckRoutine());*/
     }
 
-    IEnumerator ToggleDuckRoutine()
+    /*IEnumerator ToggleDuckRoutine()
     {
         float lerpTime = .08f;
         float enumFPS =  EnumFPS(60);
@@ -152,7 +204,7 @@ public class FirstPersonMovement : MonoBehaviour
         }
 
         yield return null;
-    }
+    }*/
 
     /// <summary>
     /// TBD.
@@ -165,3 +217,33 @@ public class FirstPersonMovement : MonoBehaviour
 
     }
 }
+
+public static class DebugExtension
+{
+    public static void DrawSphere(Vector3 position, float radius, Color color, float duration)
+    {
+        int segments = 20;
+
+        for (int i = 0; i < segments; i++)
+        {
+            float angle1 = (i / (float)segments) * Mathf.PI * 2;
+            float angle2 = ((i + 1) / (float)segments) * Mathf.PI * 2;
+
+            // Círculo no plano XY (vista de cima)
+            Vector3 point1XY = new Vector3(Mathf.Cos(angle1), Mathf.Sin(angle1), 0) * radius + position;
+            Vector3 point2XY = new Vector3(Mathf.Cos(angle2), Mathf.Sin(angle2), 0) * radius + position;
+            Debug.DrawLine(point1XY, point2XY, color, duration);
+
+            // Círculo no plano XZ (vista lateral)
+            Vector3 point1XZ = new Vector3(Mathf.Cos(angle1), 0, Mathf.Sin(angle1)) * radius + position;
+            Vector3 point2XZ = new Vector3(Mathf.Cos(angle2), 0, Mathf.Sin(angle2)) * radius + position;
+            Debug.DrawLine(point1XZ, point2XZ, color, duration);
+
+            // Círculo no plano YZ (vista de frente)
+            Vector3 point1YZ = new Vector3(0, Mathf.Cos(angle1), Mathf.Sin(angle1)) * radius + position;
+            Vector3 point2YZ = new Vector3(0, Mathf.Cos(angle2), Mathf.Sin(angle2)) * radius + position;
+            Debug.DrawLine(point1YZ, point2YZ, color, duration);
+        }
+    }
+}
+
