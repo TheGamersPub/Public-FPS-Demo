@@ -1,155 +1,99 @@
 name: Build Project for Windows and Android
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
 
-env:
-  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-  
+#env:
+#  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+#  UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+#  UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
 jobs:
   testRunner:
-    name: Test in ${{ matrix.testMode }} ✨
+    name: Test in ${{ matrix.testMode }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        testMode:
-          - EditMode
-          - PlayMode
+        testMode: [EditMode, PlayMode]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: Restore LFS cache
-        uses: actions/cache@v3
-        id: lfs-cache
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
-
-      - name: Git LFS Pull
-        run: |
-          git lfs pull
-          git add .
-          git reset --hard
-          
       - name: Restore Library cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4.2.1
         with:
           path: Library
-          key: Library-test-project-${{ matrix.targetPlatform }}
+          key: Library-test-${{ matrix.testMode }}
           restore-keys: |
-            Library-test-project-
+            Library-test-
             Library-
-            
-      - uses: game-ci/unity-test-runner@v2
+
+      - name: Run Unity Test Runner
+        uses: game-ci/unity-test-runner@v4.3.1
         id: testRunner
         with:
           testMode: ${{ matrix.testMode }}
-          checkName: ${{ matrix.testMode }} test results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4.6.0
         with:
-          name: Test results (${{ matrix.testMode }})
+          name: Test Results - ${{ matrix.testMode }}
           path: ${{ steps.testRunner.outputs.artifactsPath }}
-          
+
   buildWindows:
     needs: testRunner
-    name: Build for Windows 🖥️
+    name: Build for Windows
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: Restore LFS cache
-        uses: actions/cache@v3
-        id: lfs-cache
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
-
-      - name: Git LFS Pull
-        run: |
-          git lfs pull
-          git add .
-          git reset --hard
-          
       - name: Restore Library cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4.2.1
         with:
           path: Library
           key: Library-build-StandaloneWindows64
           restore-keys: |
             Library-build-
             Library-
-            
-      - uses: game-ci/unity-builder@v2
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Build Unity Project
+        uses: game-ci/unity-builder@v4.3.0
         with:
           targetPlatform: StandaloneWindows64
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4.6.0
         with:
-          name: build-StandaloneWindows64
+          name: Build - Windows
           path: build/StandaloneWindows64
-        
+
   buildAndroid:
     needs: testRunner
-    name: Build for Android 📱
+    name: Build for Android
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4.2.2
 
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: Restore LFS cache
-        uses: actions/cache@v3
-        id: lfs-cache
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
-
-      - name: Git LFS Pull
-        run: |
-          git lfs pull
-          git add .
-          git reset --hard
-            
       - name: Restore Library cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4.2.1
         with:
           path: Library
           key: Library-build-Android
           restore-keys: |
             Library-build-
             Library-
-              
-      - uses: game-ci/unity-builder@v2
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+
+      - name: Build Unity Project
+        uses: game-ci/unity-builder@v4.3.0
         with:
           targetPlatform: Android
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4.6.0
         with:
-          name: build-Android
+          name: Build - Android
           path: build/Android
