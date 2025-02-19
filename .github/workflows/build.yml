@@ -2,6 +2,11 @@ name: Build Project for Windows and Android
 
 on:
   workflow_dispatch:
+  
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
