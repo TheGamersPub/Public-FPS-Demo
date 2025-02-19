@@ -3125,6 +3125,71 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5270151484422860312, guid: 0e3cb3ebe1ec60f45a043c4fd049ff46, type: 3}
   m_PrefabInstance: {fileID: 883669142}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &187772658
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2424519434120178306, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 6.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424519434120178306, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 8.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424519434120178306, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -39.97
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424519434120178306, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.9125722
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424519434120178306, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.21137398
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424519434120178306, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.3410188
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424519434120178306, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.07898828
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424519434120178306, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 26.082
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424519434120178306, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -40.98
+      objectReference: {fileID: 0}
+    - target: {fileID: 2424519434120178306, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2427153156268219403, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3848335300422148224, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857985482294908366, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_Name
+      value: LumberjackCharacter (1)
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
 --- !u!1001 &188610125
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -22218,6 +22283,10 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 112935301516251139, guid: b924dce73e13fbd46b06d493f10d4ad7, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 112935301516251139, guid: b924dce73e13fbd46b06d493f10d4ad7, type: 3}
       propertyPath: m_LocalScale.z
       value: 6
       objectReference: {fileID: 0}
@@ -22227,7 +22296,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 112935301516251139, guid: b924dce73e13fbd46b06d493f10d4ad7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.3
+      value: -3.3
       objectReference: {fileID: 0}
     - target: {fileID: 112935301516251139, guid: b924dce73e13fbd46b06d493f10d4ad7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -32228,7 +32297,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5104056050460268115, guid: f718a10845157ee4da4f4604313f78e8, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5755681285874854273, guid: f718a10845157ee4da4f4604313f78e8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -33092,9 +33161,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3848335300422148224, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5857985482294908366, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
       propertyPath: m_Name
       value: LumberjackCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 5857985482294908366, guid: 600dae6a3a3127345b7b7bbe9908e4ab, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -33108,6 +33185,7 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 645393003}
   - {fileID: 7085027680784976801}
+  - {fileID: 187772658}
   - {fileID: 2101011568}
   - {fileID: 1035100269}
   - {fileID: 2101265975}
